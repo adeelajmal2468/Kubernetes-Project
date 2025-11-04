@@ -1,0 +1,118 @@
+1-Build an app and test it on local.
+2-Start dockerhub and docker-desktop and make sure that you are signed in.
+3-Prepare dockerfile in the project.
+4-Create docker image and test it:
+    - docker build -t kubernetes-test-app:latest .
+    - docker images
+    - docker run -p 5000:5000 kubernetes-test-app:latest
+
+5-Create deployment.yaml file.
+6-Install Minikube:
+    - Goto minikube website : https://minikube.sigs.k8s.io/docs/start/?arch=%2Fwindows%2Fx86-64%2Fstable%2F.exe+download 
+    - download and install it using .exe download (installer type).
+    - Go and run powershell as administrator and follow the steps.
+    - Restart the terminal before starting minikube.
+    - After that write: minikube start or minikube start --embed-certs.
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+!! You might face possible error - "" ! Failing to connect to https://registry.k8s.io/ from both inside the minikube container and host machine
+                                      * To pull new external images, you may need to configure a proxy: https:minikube.sigs.k8s.io/docs/reference/networking/proxy/ ""
+
+Potential Solution:
+
+- If proxy is being used, set proxy for minikube: minikube start --docker-env HTTP_PROXY=http://your-proxy:port --docker-env HTTPS_PROXY=https://your-proxy:port
+- If no proxy is being used, unset the below:
+    unset HTTP_PROXY
+    unset HTTPS_PROXY
+    unset NO_PROXY
+
+- Test connectivity to registry.k8s.ii: 'nslookup registry.k8s.io'
+Server: dlinkrouter.local
+Address: 192.168.0.1
+
+Non-authoritative answer:
+Name: registry.k8s.io
+Addresses: 2600:1901"0:bbc4::
+           34.96.108.209
+
+- minikube stop
+- minikube delete -all
+- restart system
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+- if it is successful then you will see this: 
+    (base) PS C:\windows\system32> minikube start
+    * minikube v1.37.0 on Microsoft Windows 11 Home 10.0.26100.6899 Build 26100.6899
+    * Automatically selected the docker driver. Other choices: hyperv, ssh
+    * Using Docker Desktop driver with root privileges
+    * Starting "minikube" primary control-plane node in "minikube" cluster
+    * Pulling base image v0.0.48 ...
+    * Downloading Kubernetes v1.34.0 preload ...
+        > gcr.io/k8s-minikube/kicbase...:  488.52 MiB / 488.52 MiB  100.00% 2.39 Mi
+        > preloaded-images-k8s-v18-v1...:  337.07 MiB / 337.07 MiB  100.00% 919.59
+    * Creating docker container (CPUs=2, Memory=8000MB) ...
+    ! Failing to connect to https://registry.k8s.io/ from both inside the minikube container and host machine
+    * To pull new external images, you may need to configure a proxy: https://minikube.sigs.k8s.io/docs/reference/networking/proxy/
+    * Preparing Kubernetes v1.34.0 on Docker 28.4.0 ...
+    * Configuring bridge CNI (Container Networking Interface) ...
+    * Verifying Kubernetes components...
+    - Using image gcr.io/k8s-minikube/storage-provisioner:v5
+    * Enabled addons: storage-provisioner, default-storageclass
+    * Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+After that:
+
+- minikube status
+  when you run this:
+  (base) PS C:\windows\system32> minikube status
+    minikube
+    type: Control Plane
+    host: Running
+    kubelet: Running
+    apiserver: Running
+    kubeconfig: Configured
+
+This tells us that our minikube cluster has been created.
+
+- kubectl get all -A (It shows info of all components).
+- kubectl get pods -A (It shows info of pods inside the cluster).
+- kubectl get nodes -A (It shows info of nodes. At start if you dont define worker nodes, it will only show control plane as node only).
+
+
+- How to add new node? : minikube start --nodes=2 or minikube start --nodes=2 --embed-certs
+
+- minikube image list (tells us the images in the cluster)
+- docker images
+- minikube image load kubernetes-test-app:latest (image successfully loaded onto the cluster)
+
+- kubectl apply -f deployment.yaml (from project directory)
+  (You can write a deployment yaml file using Kubernetes extenstion for VS code.)
+- kubectl delete deployment kubernetes-test-app (conditional if you want to delete deployment).
+
+- kubectl get pods -A
+- kubectl get nodes -A
+
+- kubectl delete pod <pod-name/id>
+- minikube service kubernetes-test-app
+- minikube dashboard
+
+- kubectl get endpoints
+- kubectl get service
+
+** Load Balancing **
+
+- kubectl get pods
+- kubectl logs -f <pod-id>
+- Download Postman for Windows and open it
+- Postman -> New Collection -> Add url of app where it is running on minikube ->  Go to Runner and add collection -> Go to Performance -> Run Performance Test -> Performance -> (Fixed -> 10Users -> 1min)
+
+- minikube stop
+
+for status: ImagePullBackoff issue
+- docker tag kubernetes-test-app:latest adeelajmal2468/kubernetes-test-app:latest
+- docker push adeelajmal2468/kubernetes-test-app:latest
+

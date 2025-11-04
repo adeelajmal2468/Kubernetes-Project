@@ -2,7 +2,12 @@
 __pycache__/
 *.py[codz]
 *$py.class
-
+Project Image.png
+powershell window.png
+Kubernetes app launched using Minikube.png
+Kubernetes Minikube Dashboard.png
+Kubernetes Postman Project.png
+Ran Load Balancing Using Postman.png
 # C extensions
 *.so
 
