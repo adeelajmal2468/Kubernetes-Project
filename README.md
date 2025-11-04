@@ -225,7 +225,7 @@ If you encounter the `ImagePullBackOff` error:
    docker push <your-dockerhub-username>/kubernetes-test-app:latest
    ```
 
-   ### **1. How to Incorporate Kubernetes in a CI/CD Workflow**
+**How to Incorporate Kubernetes in a CI/CD Workflow**
 
 In your GitHub Actions + AWS project, Kubernetes can replace or complement the deployment process. Here's how:
 
